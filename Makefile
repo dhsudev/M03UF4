@@ -1,44 +1,37 @@
-# Define variables
-SRC_DIR := src
-BUILD_DIR := game
-BIN_DIR := bin
-JAVAC := javac
-JAVA := java
+# Define the compiler
+JAVAC = javac
 
-# Find all Java source files in the src directory
-SOURCES := $(SRC_DIR)/MazeGame.java $(SRC_DIR)/MazeChars.java $(SRC_DIR)/Validador.java
+# Define flags for the compiler
+JAVACFLAGS = -d bin -sourcepath src
 
-# Generate .class files from Java source files
-CLASSES := $(patsubst $(SRC_DIR)/%.java,$(BUILD_DIR)/%.class,$(SOURCES))
+# Define the source and output directories
+SRC_DIR = src
+BIN_DIR = bin
 
-# Define the main class
-MAIN_CLASS := MazeGame
+# Define the list of Java source files
+JAVA_FILES = $(wildcard $(SRC_DIR)/*.java)
 
-# Define the name of the output JAR file
-JAR_FILE := Maze.jar
+# Define the list of class files to be generated
+CLASS_FILES = $(patsubst $(SRC_DIR)/%.java,$(BIN_DIR)/%.class,$(JAVA_FILES))
 
-# Default target
-.PHONY: all
-all: $(CLASSES) | $(BIN_DIR)
+# Default target to compile all Java source files
+all: $(CLASS_FILES)
 
-# Compile Java source files to .class files
-$(BUILD_DIR)/%.class: $(SRC_DIR)/%.java | $(BUILD_DIR)
-	$(JAVAC) -d $(BUILD_DIR) $<
+# Rule to compile Java source files into class files
+$(BIN_DIR)/%.class: $(SRC_DIR)/%.java Makefile
+	@mkdir -p $(BIN_DIR)
+	@$(JAVAC) $(JAVACFLAGS) $<
+	@echo "🛠  Compilant $< ..."
 
-# Create build directory if it doesn't exist
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+# Define the run target to execute the Java program with user-defined arguments
+run: all
+	@echo "✅ Iniciant joc..."
+	@java -cp $(BIN_DIR) MazeGame $(ARGS)
 
-# Create bin directory if it doesn't exist
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
-
-# Create JAR file
-#$(BIN_DIR)/$(JAR_FILE): $(CLASSES) | $(BIN_DIR)
-#	$(JAVA) -cp $(BUILD_DIR) $(MAIN_CLASS)
-
-# Clean generated files
-.PHONY: clean re
+# Clean up generated class files
 clean:
-	rm -rf $(BUILD_DIR) $(BIN_DIR)
+	rm -rf $(BIN_DIR)
+# Clean and recompile all 
 re: clean all
+
+.PHONY: clean re run
