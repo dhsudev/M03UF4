@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 public class Map{
 	boolean valid = false;
-	private  char[][] map;
+	private  char[][] matrix;
 	private int width;
 	private int height;
 	private File fitxer;
@@ -13,7 +13,6 @@ public class Map{
 	public Map(String file) throws IOException{
 		if(setFile(file)){
 			if(setMap(getFitxer())){
-				print();
 				System.out.println(exits);
 				if(checkSolution(door, new Position(0,0))){
 					System.out.println("Laberint válid!!!!");
@@ -25,14 +24,6 @@ public class Map{
 		else{ // No era un nom valid
 			System.out.println("\"" + file + "\"" + " no es un laberint o no está al directori corresponent.");
 		}
-	}
-	public void print(){
-		for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                System.out.print(map[i][j] + " ");
-            }
-            System.out.println(); // Saltar a la siguiente línea después de imprimir cada fila
-        }
 	}
 	public boolean checkSize(File fitxer) throws IOException{
 		BufferedReader input = new BufferedReader(new FileReader(fitxer));
@@ -147,10 +138,10 @@ public class Map{
 	}
 	public boolean isCorner(Position pos){
 		if(pos.x == 0){
-			if(pos.y == 0 || pos.y == height){return true;}
+			if(pos.y == 0 || pos.y == height-1){return true;}
 		}
-		else if(pos.x == height){
-			if(pos.y == 0 || pos.y == height){return true;}
+		else if(pos.x == width-1){
+			if(pos.y == 0 || pos.y == height-1){return true;}
 		}
 		return false;
 	}
@@ -180,7 +171,7 @@ public class Map{
 	public boolean setMap(File fitxer)throws IOException{
 		if(checkSize(fitxer)){
 			// Mapejar els valors
-			this.map = new char [height][width];
+			this.matrix = new char [height][width];
 			BufferedReader input = new BufferedReader(new FileReader(fitxer));
 			String line = input.readLine();
 			String validChars = "XEG.";
@@ -195,7 +186,7 @@ public class Map{
 					}
 				}
 				if(!checkLineInfo(line, i)){return false;}
-				map[i] = line.toCharArray();
+				matrix[i] = line.toCharArray();
 				// Check 
 			}
 			if(door == null){
@@ -215,9 +206,11 @@ public class Map{
 		this.width = width;
 	}
 	public File getFitxer(){return this.fitxer;}
-	public char[][] getmap(){return this.map;}
-	public List<Position> getSorides(){return this.exits;}
-	public Position getdoor(){return this.door;}
-	public List<Position> getblocks(){return this.blocks;}
+	public char[][] getMap(){return this.matrix;}
+	public List<Position> getExits(){return this.exits;}
+	public Position getDoor(){return this.door;}
+	public List<Position> getBlocks(){return this.blocks;}
 	public boolean isValid(){return this.valid;}
+	public int getHeight(){return this.height;}
+	public int getWidth(){return this.width;}
 }
