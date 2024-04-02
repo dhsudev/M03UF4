@@ -1,12 +1,6 @@
 public class Gamer {
 	public Position position = new Position(0,0);
-	/*
-	 * 0 - N
-	 * 1 - O
-	 * 2 - S
-	 * 3 - E
-	 */
-	public int direction = 0;
+	public int direction = 0; 	// 0 - Nord, 1 - Oest, 2 - Sud, 3 - Est 
 	public char icon;
 	public Gamer(Position door){
 		setPosition(door);

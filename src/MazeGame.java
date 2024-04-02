@@ -16,6 +16,7 @@ public class MazeGame{
 		Gamer gamer = new Gamer(map.getDoor());
 		System.out.println(map.getHeight());
 		printMap(map, gamer);
+		System.out.println(map.getBlocks());
 
 	}
 	public static void printMap(Map mapUtils, Gamer gamer){

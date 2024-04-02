@@ -3,13 +3,17 @@ import java.io.*;
 public class Map{
 	boolean valid = false;
 	private  char[][] matrix;
+	// Dimensions
 	private int width;
 	private int height;
+	// Nom laberint 
 	private File fitxer;
+	// Variables per guardar posicions rellevants
 	private List<Position> blocks = new ArrayList<>();
 	private Position door;
 	private List<Position> exits = new ArrayList<>();
 	private List<Position> walked = new ArrayList<>();
+
 	public Map(String file) throws IOException{
 		if(setFile(file)){
 			if(setMap(getFitxer())){
@@ -37,12 +41,12 @@ public class Map{
 		// Guardar valors
 		int height = UtilString.aEnter(dimensions[0]);
 		int width = UtilString.aEnter(dimensions[1]);
-		// Comtestr tamany mínim
+		// Comprovar tamany mínim
 		if((height < 2 || width < 2) || (height == 2 && width == 2)){
 			System.out.println("Laberint no válid: massa petit");
 			return false;
 		}
-		// Comtestr que el laberint té el tamany especificat
+		// Comprovar que el laberint té el tamany especificat
 		int count = 0;
 		while (true) {
 			count++;
@@ -52,11 +56,13 @@ public class Map{
 				count--;
 				break;
 			}
+			// Ample inválid (no és l'indicat o hi ha línies incompletes)
 			if(line.length() != width){
 				System.out.println("Laberint no válid: el ample ("+ width +") específicat no es correcte");
 				return false;
 			}
 		}
+		// Alçada inválida
 		if(count != height){
 			System.out.println("Laberint no válid: l'altura especificada ("+ height +") no es correcte");
 			return false;
@@ -64,18 +70,21 @@ public class Map{
 		setDimensions(height, width);
 		return true;
 	}
+	/*
+	 * Rep una línea del fitxer i guarda les dades rellevants d'aquesta
+	 */
 	public boolean checkLineInfo(String line, int y){
 		for (int x = 0; x < line.length(); x++){
 			Position pos = new Position(x,y);
 			switch (line.charAt(x)){
-				case 'X':
+				case 'X': // Paret o obstacle
 					// Check if obstacle (no pared)
 					if (!isWall(pos)){
 						blocks.add(pos);
 					}
 					// Si es una pared o cantonada, omitim
 					break;
-				case 'E':
+				case 'E': // Entrada
 					// Check if esta en el borde(no cantonada) i no esta definida ja
 					if (isWall(pos) && !isCorner(pos) && door == null){
 						door = pos;
@@ -84,7 +93,7 @@ public class Map{
 						return false;
 					}
 					break;
-				case 'G':
+				case 'G': // Sortides
 					// Check if esta en el borde (no cantonada)
 					if (isWall(pos) && !isCorner(pos)){
 						exits.add(pos);
@@ -93,7 +102,7 @@ public class Map{
 						return false;
 					}
 					break;
-				case '.':
+				case '.': // Lliure
 					// Check si no esta al borde (tampoc cantonada)
 					if (isWall(pos) || isCorner(pos)){
 						System.out.println("Laberint no válid: Les pareds estan incompletes");
@@ -104,6 +113,16 @@ public class Map{
 		}
 		return true;
 	}
+	/*
+	 * Funció recursiva per comprovar si un laberint té sol·lucions 
+	 * mitjançant backtracking
+	 * La primera trucada es desde la entrada. 
+	 * Des d'allà prova totes les pocicions adjaçents i es crida a si mateixa
+	 * En cas de acabar en una casella no válida, torna a l'última trucada válida
+	 * El cas casos base són:
+	 * 	 - Arribar a la sortida
+	 * 	 - Haber recorregut tot el mapa (no té sol·lució)
+	 */
 	public boolean checkSolution(Position pos, Position ant){
 		if(isExit(pos)){return true;}
 		if((isWall(pos) && !isDoor(pos))|| isCorner(pos) || isBlock(pos)){return false;}
@@ -117,12 +136,18 @@ public class Map{
 		boolean right = checkSolution(new Position(pos.x+1, pos.y), pos);
 		return(up || down || left || right);
 	}
+	// Per comprovar si la funció per checkejar la sol·lució 
+	// ja ha passat per una posició
 	public boolean isWalked(Position pos){
 		for (Position position : walked) {
             if (position.equals(pos)) {return true;}
 		}
 		return false;
 	}
+	/*
+	 * Funcions que comproven si una posició es rellevant,
+	 * paret, block, sortida, entrada ...
+	 */
 	public boolean isDoor(Position pos){
 		return(door.equals(pos));
 	}
@@ -151,6 +176,9 @@ public class Map{
 		// Borde
 		return true;
 	}
+	/*
+	 * Comprova si el nom del laberint es válid
+	 */
 	public boolean setFile(String filePath){
 		filePath = "laberints/" + filePath;
 		File test = new File(filePath);
@@ -168,6 +196,13 @@ public class Map{
 		// No era un fitxer vàlid
 		return false;
 	}
+	/*
+	 * Lectura del laberint, comprova que:
+	 * 		- hi hagi un charset adecuat
+	 * 		- Les sortides están a les parets (amb la func lineinfo)
+	 * 		- Hi ha una única entrada ubicada a una paret (amb la func lineinfo)
+	 * Va llegint i si troba algun error deixa de llegir.
+	 */
 	public boolean setMap(File fitxer)throws IOException{
 		if(checkSize(fitxer)){
 			// Mapejar els valors
@@ -205,6 +240,9 @@ public class Map{
 		this.height = height;
 		this.width = width;
 	}
+	/*
+	 * Getters de les variables de classe privades necessitades a fora de la classe
+	 */
 	public File getFitxer(){return this.fitxer;}
 	public char[][] getMap(){return this.matrix;}
 	public List<Position> getExits(){return this.exits;}
