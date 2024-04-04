@@ -4,7 +4,8 @@ import java.io.*;
 public class MazeGame{
 	private static List<Position> visibleBlocks = new ArrayList<>();
 	private static List<Position> walked = new ArrayList<>();
-	
+	private static int tries = 1;
+	private static final String TAG = "Moviment invàlid";
 	public static void main(String[] args)throws IOException{
 		if(args.length < 1){
 			System.out.println("No s'ha especificat nom del laberint");
@@ -21,26 +22,65 @@ public class MazeGame{
 			String[] values = record.previous.split(",");
 			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.laberint, values[2]));
 		}
-		getMove(record.laberint);
+		while(true){
+			String[] moves = getMove(record.laberint);
+			if(moves.length == 1 && moves[0].matches("[0hq]||-1")){ // No era un moviment molt bo
+				if(moves[0].equals("0")){
+					Log.e(TAG, "No vols fer res? Així no guanyaras!");
+				}
+				else if(moves[0].equals("h")){
+					printHelp();
+				}else if(moves[0].equals("q")){
+					Log.exit("Quina poca paciéncia!\n"); 
+					break;
+				}
+			}else{
+				// todo
+			}
+		}
+		
+		printMap(map, gamer);
+		
 		//record.cleanRecords();
-		//printMap(map, gamer);
-		//printHelp();
 	}
 	public static String[] getMove(String name)throws IOException
     {
-        System.out.printf("╭─   MazeGame ~ %s\n" + //
-						"╰ ", name);
+		String validMoves = "[0-9rlf]*";
+		Log.p(String.format("╭─   MazeGame ~ %s\n" + //
+						"╰ ", name));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String move = reader.readLine();
 		// Clean line
-		move.replace(" ", "");
-		return(move.split(""));
+		move = move.replace(" ", "");
+		move = move.replace("	", "");
+		move = move.toLowerCase();
+		if(move.isEmpty() || move.isBlank()){return new String[] {"0"};}
+		else if(move.matches(validMoves)){
+			String[] moves = move.split("");
+			if((moves.length == 1 && UtilString.esEnter(moves[0])) || UtilString.esEnter(moves[moves.length-1])){
+				Log.e(TAG, "Que fas posant números sense un moviment darrere?");
+				return (new String[] {"-1"});
+			}
+			// Check if a num if followed by a move
+			for(int i = 0; i < moves.length-1; i++){
+				if(moves[i].matches("[0-9]") && (!moves[i+1].matches("[a-z]"))){
+					Log.e(TAG, "Que fas posant números sense un moviment darrere?");
+					return (new String[] {"-1"});
+				}
+			}
+			return(moves);
+		}else if(move.equals("h") ||move.equals("q")){
+			return(move.split(""));
+		}
+		Log.e(TAG, "Hi ha caràcters o combinacions no permeses");
+		printHelp();
+		return(new String[] {"-1"});
 	}
 	public static void printHeader(String laberint, String intents){
-		System.out.printf("Joc del laberint\n================\nH: mostra ajuda\n\nLaberint: %s\n%s\n", laberint, intents);
+		Log.i(String.format("Joc del laberint\n================\nH: mostra ajuda\n\nLaberint: %s\n%s\n", laberint, intents));
 	}
 	public static void printHelp(){
-		System.out.println("Les opcions disponibles són:\n" + //
+		Log.d("Les opcions disponibles són:\n" + //
 						"H: Mostra aquest text d'ajuda\n" + //
 						"L: gira a l'esquerra\n" + //
 						"R: gira a la dreta\n" + //

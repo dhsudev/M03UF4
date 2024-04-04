@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 public class Map{
+	private final String TAG = "Laberint invàlid";
 	boolean valid = false;
 	private  char[][] matrix;
 	// Dimensions
@@ -21,11 +22,11 @@ public class Map{
 					//System.out.println("Laberint válid!");
 					this.valid = true;
 				}
-				else{System.out.println("Laberint no válid: no té solució");}
+				else{Log.e(TAG, "No té solució");}
 			}
 		}
 		else{ // No era un nom valid
-			System.out.println("\"" + file + "\"" + " no es un laberint o no está al directori corresponent.");
+			Log.e(TAG, String.format("%s no és un laberint o no està al directory corresponent\n", file));
 		}
 	}
 	public boolean checkSize(File fitxer) throws IOException{
@@ -34,7 +35,7 @@ public class Map{
 		String[] dimensions = legend.split("x");
 		// Comtestr el format de la primera línea
 		if(dimensions.length < 2 || !UtilString.esEnter(dimensions[0]) || !UtilString.esEnter(dimensions[1])){
-			System.out.println("Laberint no válid: Les dimensions no tenen el format desitjat heightXwidth");
+			Log.e(TAG,"Les dimensions no tenen el format desitjat heightXwidth");
 			return false;
 		}
 		// Guardar valors
@@ -42,7 +43,7 @@ public class Map{
 		int width = UtilString.aEnter(dimensions[1]);
 		// Comprovar tamany mínim
 		if((height < 2 || width < 2) || (height == 2 && width == 2)){
-			System.out.println("Laberint no válid: massa petit");
+			Log.e(TAG,"massa petit");
 			return false;
 		}
 		// Comprovar que el laberint té el tamany especificat
@@ -57,13 +58,13 @@ public class Map{
 			}
 			// Ample inválid (no és l'indicat o hi ha línies incompletes)
 			if(line.length() != width){
-				System.out.println("Laberint no válid: el ample ("+ width +") específicat no es correcte");
+				Log.e(TAG, "el ample ("+ width +") específicat no es correcte");
 				return false;
 			}
 		}
 		// Alçada inválida
 		if(count != height){
-			System.out.println("Laberint no válid: l'altura especificada ("+ height +") no es correcte");
+			Log.e(TAG, "l'altura especificada ("+ height +") no es correcte");
 			return false;
 		}
 		setDimensions(height, width);
@@ -88,7 +89,7 @@ public class Map{
 					if (isWall(pos) && !isCorner(pos) && door == null){
 						door = pos;
 					} else{
-						System.out.println("Laberint no válid: Les entrades están a posicions incorrectes o hi ha més d'una");
+						Log.e(TAG, "Les entrades están a posicions incorrectes o hi ha més d'una");
 						return false;
 					}
 					break;
@@ -97,14 +98,14 @@ public class Map{
 					if (isWall(pos) && !isCorner(pos)){
 						exits.add(pos);
 					}else {
-						System.out.println("Laberint no válid: Les exits están a posicions incorrectes");
+						Log.e(TAG, "Les exits están a posicions incorrectes");
 						return false;
 					}
 					break;
 				case '.': // Lliure
 					// Check si no esta al borde (tampoc cantonada)
 					if (isWall(pos) || isCorner(pos)){
-						System.out.println("Laberint no válid: Les pareds estan incompletes");
+						Log.e(TAG, "Les pareds estan incompletes");
 						return false;
 					}
 					break;
@@ -215,7 +216,7 @@ public class Map{
 				// Check if all the elements in the line are mazeChars
 				for (char c : line.toCharArray()) {
 					if(!validChars.contains(""+c)){
-						System.out.println("Laberint no válid: no utilitza un charSet adequat");
+						Log.e(TAG, "no utilitza un charSet adequat");
 						return false;
 					}
 				}
@@ -224,11 +225,11 @@ public class Map{
 				// Check 
 			}
 			if(door == null){
-				System.out.println("Laberint no válid: No hi ha entrada");
+				Log.e(TAG, "No hi ha entrada");
 				return false;
 			}
 			if(exits.isEmpty()){
-				System.out.println("Laberint no válid: No hi ha sortida");
+				Log.e(TAG, "No hi ha sortida");
 				return false;
 			}
 			return true;
