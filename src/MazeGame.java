@@ -4,6 +4,7 @@ import java.io.*;
 public class MazeGame{
 	private static List<Position> visibleBlocks = new ArrayList<>();
 	private static List<Position> walked = new ArrayList<>();
+	
 	public static void main(String[] args)throws IOException{
 		if(args.length < 1){
 			System.out.println("No s'ha especificat nom del laberint");
@@ -14,10 +15,12 @@ public class MazeGame{
 			return;
 		}
 		Gamer gamer = new Gamer(map.getDoor());
-		System.out.println(map.getHeight());
+		//System.out.println(map.getHeight());
 		printMap(map, gamer);
-		System.out.println(map.getBlocks());
-
+		//System.out.println(map.getBlocks());
+		//String user = "paco";
+		//int intents = 1;
+		//Record record = new Record(args[0], user, intents);
 	}
 	public static void printMap(Map mapUtils, Gamer gamer){
 		char[][] map = mapUtils.getMap();
@@ -46,7 +49,7 @@ public class MazeGame{
                 if((pos.y == 0 || pos.y == mapUtils.getHeight()-1) && pos.x < mapUtils.getWidth()-1){System.out.print(MazeChars.LIMIT_H);}
 				else{System.out.print(" ");}
             }
-            System.out.println(); // Saltar a la siguiente línea después de imprimir cada fila
+            System.out.println();
         }
 	}
 	public static boolean isWalked(Position pos){

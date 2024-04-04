@@ -17,9 +17,8 @@ public class Map{
 	public Map(String file) throws IOException{
 		if(setFile(file)){
 			if(setMap(getFitxer())){
-				System.out.println(exits);
-				if(checkSolution(door, new Position(0,0))){
-					System.out.println("Laberint válid!!!!");
+				if(checkSolution(door)){
+					//System.out.println("Laberint válid!");
 					this.valid = true;
 				}
 				else{System.out.println("Laberint no válid: no té solució");}
@@ -123,17 +122,17 @@ public class Map{
 	 * 	 - Arribar a la sortida
 	 * 	 - Haber recorregut tot el mapa (no té sol·lució)
 	 */
-	public boolean checkSolution(Position pos, Position ant){
+	public boolean checkSolution(Position pos){
 		if(isExit(pos)){return true;}
 		if((isWall(pos) && !isDoor(pos))|| isCorner(pos) || isBlock(pos)){return false;}
 		if(pos.x < 0 || pos.y < 0){return false;}
-		if (pos.equals(ant)) {return false;}
+		//if (pos.equals(ant)) {return false;}
 		if(isWalked(pos)){return false;}
 		walked.add(pos);
-		boolean up = checkSolution(new Position(pos.x, pos.y+1), pos);
-		boolean down = checkSolution(new Position(pos.x, pos.y-1), pos);
-		boolean left = checkSolution(new Position(pos.x-1, pos.y), pos);
-		boolean right = checkSolution(new Position(pos.x+1, pos.y), pos);
+		boolean up = checkSolution(new Position(pos.x, pos.y+1));
+		boolean down = checkSolution(new Position(pos.x, pos.y-1));
+		boolean left = checkSolution(new Position(pos.x-1, pos.y));
+		boolean right = checkSolution(new Position(pos.x+1, pos.y));
 		return(up || down || left || right);
 	}
 	// Per comprovar si la funció per checkejar la sol·lució 

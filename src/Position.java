@@ -1,7 +1,8 @@
 class Position {
     int x;
     int y;
-
+	// Position entrada = new Position(0,0);
+	// entrada.x
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
