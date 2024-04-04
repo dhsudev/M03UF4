@@ -2,21 +2,26 @@ import java.util.*;
 import java.io.*;
 public class Record {
 	public static String fitxer = "records.csv";
-	private String laberint;
-	private String user;
-	private int intents;
-	private String previous;
+	public static String laberint;
+	public static String user;
+	public static int intents;
+	public static String previous;
 	public Record(String laberint, String user, int intents)throws IOException{
 		setLaberint(laberint);
 		setUser(user);
 		setIntents(intents);
-		if(exists() > intents || exists() == 0){
+		if(exists() > intents || (exists() == 0 && intents > 0)){
 			deleteRecord();
 			saveRecord();
 		}
 		//cleanRecords();
 	}
-	private void setLaberint(String name){
+	public Record(String laberint){
+		setLaberint(laberint);
+		setUser(",");
+		setIntents(0);
+	}
+	public static  void setLaberint(String name){
 		if(name.contains(".dat")){
 			name.replace(".dat","");
 		}
@@ -24,12 +29,12 @@ public class Record {
 		name.replace(",","");
 		laberint = name;
 	}
-	private void setUser(String name){
+	public static  void setUser(String name){
 		// To not have problems reading the csv
 		name.replace(",","");
 		user = name;
 	}
-	private void setIntents(int n){
+	public static  void setIntents(int n){
 		if(n > 0){intents = n;}
 	}
 	private void saveRecord() throws IOException{
@@ -46,17 +51,18 @@ public class Record {
 		 * 	In this case, we could have a lot of data 
 		 * 	so create two objects is a lot of memory
 		*/
+		
+		if(previous == null){return;}
 		BufferedReader input = new BufferedReader(new FileReader(fitxer));
 		StringBuffer inputBuffer = new StringBuffer();
 		String line;
 		// TO DO: NOT PREVIOUS
-		System.out.println("WIL DELETE THIS LINE ->"+previous);
 		while ((line = input.readLine()) != null) {
 			// If we reach the prev record, we skip it
 			if(!line.equals(previous)){
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
-			}else{System.out.println("WIL DELETE THIS LINE ->"+previous);}
+			}//else{System.out.println("WIL DELETE THIS LINE ->"+previous);}
 			System.out.println(line);
 		}
         input.close();
@@ -65,7 +71,7 @@ public class Record {
         output.write(inputBuffer.toString().getBytes());
         output.close();
 	}
-	public int exists() throws IOException{
+	public static int exists() throws IOException{
 		BufferedReader input = new BufferedReader(new FileReader(fitxer));
 		String line = input.readLine();
 		while(true){
@@ -75,8 +81,10 @@ public class Record {
 			//System.out.println(Arrays.toString(record));
 			if(record[0].equals(laberint)){
 				previous = line;
-				input.close();
-				return Integer.parseInt(record[2]);
+				if(UtilString.esEnter(record[2])){
+					input.close();
+					return Integer.parseInt(record[2]);
+				}
 			}
 		}
 		input.close();

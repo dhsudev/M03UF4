@@ -15,12 +15,28 @@ public class MazeGame{
 			return;
 		}
 		Gamer gamer = new Gamer(map.getDoor());
-		//System.out.println(map.getHeight());
-		printMap(map, gamer);
-		//System.out.println(map.getBlocks());
-		//String user = "paco";
-		//int intents = 1;
-		//Record record = new Record(args[0], user, intents);
+		Record record = new Record(args[0]);
+		if(record.exists() < 1){printHeader(record.laberint, "Encara no resolt");}
+		else{
+			String[] values = record.previous.split(",");
+			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.laberint, values[2]));
+		}
+		//record.cleanRecords();
+		//printMap(map, gamer);
+		//printHelp();
+		
+	}
+	public static void printHeader(String laberint, String intents){
+		System.out.printf("Joc del laberint\n================\nH: mostra ajuda\n\nLaberint: %s\n%s\n", laberint, intents);
+	}
+	public static void printHelp(){
+		System.out.println("Les opcions disponibles són:\n" + //
+						"H: Mostra aquest text d'ajuda\n" + //
+						"L: gira a l'esquerra\n" + //
+						"R: gira a la dreta\n" + //
+						"F: mou una passa endavant\n" + //
+						"nF: mou n passes endavant\n" + //
+						"Q: Sortir");
 	}
 	public static void printMap(Map mapUtils, Gamer gamer){
 		char[][] map = mapUtils.getMap();

@@ -13,7 +13,7 @@ public class Map{
 	private Position door;
 	private List<Position> exits = new ArrayList<>();
 	private List<Position> walked = new ArrayList<>();
-
+	public String name = "";
 	public Map(String file) throws IOException{
 		if(setFile(file)){
 			if(setMap(getFitxer())){
