@@ -21,10 +21,20 @@ public class MazeGame{
 			String[] values = record.previous.split(",");
 			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.laberint, values[2]));
 		}
+		getMove(record.laberint);
 		//record.cleanRecords();
 		//printMap(map, gamer);
 		//printHelp();
-		
+	}
+	public static String[] getMove(String name)throws IOException
+    {
+        System.out.printf("╭─   MazeGame ~ %s\n" + //
+						"╰ ", name);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String move = reader.readLine();
+		// Clean line
+		move.replace(" ", "");
+		return(move.split(""));
 	}
 	public static void printHeader(String laberint, String intents){
 		System.out.printf("Joc del laberint\n================\nH: mostra ajuda\n\nLaberint: %s\n%s\n", laberint, intents);
