@@ -29,6 +29,8 @@ public class Record {
 		name.replace(",","");
 		laberint = name;
 	}
+
+	
 	public static  void setUser(String name){
 		// To not have problems reading the csv
 		name.replace(",","");

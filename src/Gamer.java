@@ -1,26 +1,48 @@
 public class Gamer {
-	public Position position = new Position(0,0);
-	public int direction = 0; 	// 0 - Nord, 1 - Oest, 2 - Sud, 3 - Est 
+	public Position position = new Position(0, 0);
+	public int direction = 0; // 0 - Nord, 1 - Oest, 2 - Sud, 3 - Est
 	public char icon;
-	public Gamer(Position door){
+
+	public Gamer(Position door) {
 		setPosition(door);
 		setDirection(3);
 	}
-	public void setPosition(Position pos){
+
+	public void setPosition(Position pos) {
 		this.position.x = pos.x;
 		this.position.y = pos.y;
 	}
-	public void setDirection(int n){
-		direction += n%4;
-		if(direction == 0){icon = MazeChars.ARROW_UP;}
-		else if(direction == 1){icon = MazeChars.ARROW_LEFT;}
-		else if(direction == 2){icon = MazeChars.ARROW_DOWN;}
-		else if(direction == 3){icon = MazeChars.ARROW_RIGHT;}
+
+	public void setDirection(int n) {
+		direction += n % 4;
+		if (direction == 0) {
+			icon = MazeChars.ARROW_UP;
+		} else if (direction == 1) {
+			icon = MazeChars.ARROW_LEFT;
+		} else if (direction == 2) {
+			icon = MazeChars.ARROW_DOWN;
+		} else if (direction == 3) {
+			icon = MazeChars.ARROW_RIGHT;
+		}
 	}
-	public void turnLeft(int n){
+
+	public void turnLeft(int n) {
 		setDirection(n);
 	}
-	public void turnRight(int n){
+
+	public void turnRight(int n) {
 		setDirection(-n);
+	}
+
+	public void move(int n) {
+		if (direction == 0) {
+			setPosition(new Position(this.position.x + 1, this.position.y));
+		} else if (direction == 1) {
+			setPosition(new Position(this.position.x, this.position.y - 1));
+		} else if (direction == 2) {
+			setPosition(new Position(this.position.x, this.position.y + 1));
+		} else if (direction == 3) {
+			setPosition(new Position(this.position.x - 1, this.position.y));
+		}
 	}
 }
