@@ -9,6 +9,7 @@ public class MazeChars {
 	public static final char ARROW_DOWN = '↓';
 	public static final char ARROW_LEFT = '←';
 	public static final char ARROW_RIGHT = '→';
-	public static final char WALL = '󰟾';
+	public static final char WALL = '■';
 	public static final char EMPTY = '·';
+	public static final char WALKED = ' ';
 }

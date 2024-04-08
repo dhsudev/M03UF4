@@ -16,7 +16,8 @@ public class MazeGame {
 		if (!map.isValid()) {
 			return;
 		}
-		Gamer gamer = new Gamer(map.getDoor());
+		Gamer gamer = new Gamer(map);
+		//Log.d("Gamer:" + gamer.position + "Door" + map.getDoor());
 		Record record = new Record(args[0]);
 		if (record.exists() < 1) {
 			printHeader(record.laberint, "Encara no resolt");
@@ -24,6 +25,7 @@ public class MazeGame {
 			String[] values = record.previous.split(",");
 			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.laberint, values[2]));
 		}
+		printMap(map, gamer);
 		while (true) {
 			String[] moves = getMove(record.laberint);
 			// Log.d(Arrays.asList(moves).toString());
@@ -38,22 +40,46 @@ public class MazeGame {
 				}
 			} else {
 				int times = 1;
-				for (int i = 0; i < moves.length - 1; i++) {
-					if (UtilString.esEnter(moves[i])) {
-						times = UtilString.aEnter(moves[i]);
-						// continue;
-					} else if (moves[i].equals("f")) {
-						gamer.move(times);
+				int digit = 1;
+				int i = 0;
+				//for (int i = 0; i < moves.length; i++) {
+				while(i < moves.length){
+					times = 1;
+					digit = 0;
+					while(UtilString.esEnter(moves[i])){
+						times *= digit;
+						times += UtilString.aEnter(moves[i]);
+						digit *= 10;
+						i++;
+					}
+					System.out.println(gamer.direction);
+					if (moves[i].equals("f")) {
+						Position ant = gamer.position;
+						// Check if it goes outside the map or the walls
+						if(!gamer.move(times) || (map.isWall(gamer.position))){
+							Log.w(TAG, "El laberint no és tan gran flipat");
+							//gamer.setPosition(ant, false);
+							break;
+						} else if(map.isBlock(gamer.position)){
+							Log.w("", "Xoc!");
+							tries ++;
+							if(!isVisibleBlock(gamer.position)){visibleBlocks.add(new Position(gamer.position.x,gamer.position.y));}
+							gamer = new Gamer(map);
+						}
 					} else if (moves[i].equals("l")) {
 						gamer.turnLeft(times);
 					} else if (moves[i].equals("r")) {
 						gamer.turnRight(times);
 					}
-					times = 1;
 					Log.d(gamer.position.toString());
-					visibleBlocks.add(gamer.position);
+					if(!isWalked(gamer.position)){walked.add(new Position(gamer.position.x,gamer.position.y));}
+					System.out.println(Arrays.asList(walked));
+					i++;
+					
 				}
+				System.out.println(gamer.direction);
 				printMap(map, gamer);
+				
 			}
 		}
 
@@ -76,13 +102,7 @@ public class MazeGame {
 			return new String[] { "0" };
 		} else if (move.matches(validMoves)) {
 			String[] moves = move.split("");
-			// Check last number
-			// if ((move.length() == 1 && UtilString.esEnter(UtilString) ||
-			// UtilString.esEnter(moves[moves.length - 1])) {
-			// Log.e(TAG, "Que fas posant números sense un moviment darrere?");
-			// return (new String[] { "-1" });
-			// }
-			// Check if a num if followed by a move
+			// Check if a numbers are followed by a moves
 			int i = 0;
 			while (i < moves.length) {
 				// Move current number
@@ -158,12 +178,12 @@ public class MazeGame {
 				} else if (mapUtils.isBlock(pos)) {
 					if (isVisibleBlock(pos)) {
 						System.out.print(MazeChars.WALL);
-					} else if (isWalked(pos)) {
-						System.out.print(' ');
 					} else {
 						System.out.print(MazeChars.EMPTY);
 					}
-				} else {
+				} else if(isWalked(pos)){ 
+					System.out.print(MazeChars.WALKED);
+				}else {
 					System.out.print(MazeChars.EMPTY);
 				}
 				// Add separations (' ' or '─' deppending if it's in wall or not) to make it

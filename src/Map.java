@@ -172,7 +172,7 @@ public class Map{
 	}
 	public boolean isWall(Position pos){
 		// En mig
-		if((pos.x != width -1 && pos.x != 0)&&(pos.y != height -1 && pos.y != 0)){return false;}
+		if((pos.x < width-1  && pos.x > 0)&&(pos.y < height-1 && pos.y > 0)){return false;}
 		// Borde
 		return true;
 	}
