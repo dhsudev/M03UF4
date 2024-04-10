@@ -17,11 +17,11 @@ class Position {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass() || this == null) {
             return false;
         }
         Position position = (Position) obj;
-        return x == position.x && y == position.y;
+        return this.x == position.x && this.y == position.y;
     }
 	
 }

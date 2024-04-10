@@ -14,7 +14,9 @@ public class Log {
     public static void i(String message) {
         System.out.println(ANSI_YELLOW + message + ANSI_RESET);
     }
-
+	public static void g(String message) {
+        System.out.println(ANSI_GREEN + message + ANSI_RESET);
+    }
     //error
     public static void e(String className, String message) {
         System.out.println(ANSI_PINK + className + " : " + message + ANSI_RESET);

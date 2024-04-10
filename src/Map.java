@@ -10,7 +10,7 @@ public class Map{
 	// Nom laberint 
 	private File fitxer;
 	// Variables per guardar posicions rellevants
-	private List<Position> blocks = new ArrayList<>();
+	private static List<Position> blocks = new ArrayList<>();
 	private Position door;
 	private List<Position> exits = new ArrayList<>();
 	private List<Position> walked = new ArrayList<>();
@@ -247,7 +247,7 @@ public class Map{
 	public char[][] getMap(){return this.matrix;}
 	public List<Position> getExits(){return this.exits;}
 	public Position getDoor(){return this.door;}
-	public List<Position> getBlocks(){return this.blocks;}
+	public static List<Position> getBlocks(){return blocks;}
 	public boolean isValid(){return this.valid;}
 	public int getHeight(){return this.height;}
 	public int getWidth(){return this.width;}

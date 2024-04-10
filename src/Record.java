@@ -58,7 +58,6 @@ public class Record {
 		BufferedReader input = new BufferedReader(new FileReader(fitxer));
 		StringBuffer inputBuffer = new StringBuffer();
 		String line;
-		// TO DO: NOT PREVIOUS
 		while ((line = input.readLine()) != null) {
 			// If we reach the prev record, we skip it
 			if(!line.equals(previous)){

@@ -16,49 +16,69 @@ public class Gamer {
 
 		}
 		if(pos.x >= 0 && pos.y >= 0 && (!map.isWall(pos) || map.isDoor(pos) || map.isExit(pos))){
-			Log.w("a", "updated pos");
+			Log.d("updated pos");
 			this.position.x = pos.x;
 			this.position.y = pos.y;
 			return(true);
-
 		}
-		Log.w("a","not updated");
+		Log.d("pos not updated");
 		return (false);
 	}
-
-	public void setDirection(int n) {
-		direction += n;
-		direction %= 4;
-		//if(n < 0){direction = (direction + n) % 4;}
-		//else{direction = (direction + n) % 4;}
-		if (direction == 0) {
-			icon = MazeChars.ARROW_UP;
-		} else if (direction == 1) {
-			icon = MazeChars.ARROW_LEFT;
-		} else if (direction == 2) {
-			icon = MazeChars.ARROW_DOWN;
-		} else if (direction == 3) {
-			icon = MazeChars.ARROW_RIGHT;
+	// Method to turn left
+    public void turnLeft() {
+		setDirection((this.direction - 1 + 4) % 4);
+	}
+	
+	// Method to turn right
+	public void turnRight() {
+		setDirection((this.direction + 1) % 4);
+	}
+	
+	// Method to turn move the gamer depending on 
+    public void setDirection(int n) {
+       if(n > -1 && n<4){
+		this.direction = n;
+		switch (direction) {
+			case 0:
+				this.icon = MazeChars.ARROW_UP;
+				break;
+			case 1:
+				this.icon = MazeChars.ARROW_LEFT;
+				break;
+			case 2:
+				this.icon = MazeChars.ARROW_DOWN;
+				break;
+			case 3:
+				this.icon = MazeChars.ARROW_RIGHT;
+				break;
 		}
 	}
+    }
 
-	public void turnLeft(int n) {
-		setDirection(n);
-	}
-
-	public void turnRight(int n) {
-		setDirection(-n);
-	}
+    // Method for turning in a specific direction (90 * n degrees)
+    public void turn(int n) {
+        if (n < 0) {
+			// If n is negative, turn left |n| times
+			for (int i = 0; i < Math.abs(n); i++) {
+				turnLeft();
+			}
+		} else {
+			// If n is positive, turn right n times
+			for (int i = 0; i < n; i++) {
+				turnRight();
+			}
+		}
+    }
 
 	public boolean move(int n) {
 		if(n==0){n=1;}
-		Position pos = this.position;
+		Position pos = new Position(position.x, position.y);
 		if (direction == 0) { // UP
-			pos.y += n;
+			pos.y -= n;
 		} else if (direction == 1) { // Left
 			pos.x -= n;
 		} else if (direction == 2) { // Down
-			pos.y -= n;
+			pos.y += n;
 		} else if (direction == 3) { // Right
 			pos.x += n;
 		}

@@ -6,8 +6,8 @@ public class MazeGame {
 	public static List<Position> walked = new ArrayList<>();
 	private static int tries = 1;
 	private static final String TAG = "Moviment invàlid";
-
 	public static void main(String[] args) throws IOException {
+		boolean win = false;
 		if (args.length < 1) {
 			System.out.println("No s'ha especificat nom del laberint");
 			return;
@@ -25,6 +25,10 @@ public class MazeGame {
 			String[] values = record.previous.split(",");
 			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.laberint, values[2]));
 		}
+		//gamer.setDirection(0);
+		//gamer.turn(0);
+		//gamer.move(tries);
+		System.out.println(gamer.direction);
 		printMap(map, gamer);
 		while (true) {
 			String[] moves = getMove(record.laberint);
@@ -54,40 +58,86 @@ public class MazeGame {
 					}
 					System.out.println(gamer.direction);
 					if (moves[i].equals("f")) {
-						Position ant = gamer.position;
+						Position ant = new Position(gamer.position.x, gamer.position.y);
 						// Check if it goes outside the map or the walls
-						if(!gamer.move(times) || (map.isWall(gamer.position))){
+						if(!gamer.move(times)){
 							Log.w(TAG, "El laberint no és tan gran flipat");
 							//gamer.setPosition(ant, false);
 							break;
-						} else if(map.isBlock(gamer.position)){
-							Log.w("", "Xoc!");
-							tries ++;
-							if(!isVisibleBlock(gamer.position)){visibleBlocks.add(new Position(gamer.position.x,gamer.position.y));}
-							gamer = new Gamer(map);
+						} else{
+							List<Position> currentWalk = calcWalkedPos(ant, gamer);
+							for(Position pos : currentWalk){
+								if(!isWalked(pos)){walked.add(pos);}
+							}
+							if(checkColapse(currentWalk, map)){
+								Log.w("", "Xoc!");
+								tries ++;
+								gamer = new Gamer(map);
+							}
 						}
 					} else if (moves[i].equals("l")) {
-						gamer.turnLeft(times);
+						gamer.turn(times);
 					} else if (moves[i].equals("r")) {
-						gamer.turnRight(times);
+						gamer.turn(-times);
 					}
-					Log.d(gamer.position.toString());
-					if(!isWalked(gamer.position)){walked.add(new Position(gamer.position.x,gamer.position.y));}
+					Log.d(gamer.position.toString());	
 					System.out.println(Arrays.asList(walked));
 					i++;
 					
 				}
 				System.out.println(gamer.direction);
 				printMap(map, gamer);
-				
+				if(map.isExit(gamer.position)){
+					win = true;
+					break;
+				}
 			}
 		}
-
+		if(win){
+			Log.g("Has resolt el laberint en "+ tries +" intents!");
+			
+		}
 		// printMap(map, gamer);
 
 		// record.cleanRecords();
 	}
-
+	public static List<Position> calcWalkedPos(Position ant, Gamer gamer){
+		int i;
+		int max;
+		List<Position> walkedPos = new ArrayList<>();
+		if(ant.equals(gamer.position)){return walkedPos;}
+		else if(ant.x != gamer.position.x){
+			i = Math.min(ant.x, gamer.position.x);
+			max = Math.max(ant.x, gamer.position.x);
+			while(i <= max){
+				Position pos = new Position(i, gamer.position.y);
+				walkedPos.add(pos);
+				i++;
+			}
+		} else {
+			i = Math.min(ant.y, gamer.position.y);
+			max = Math.max(ant.y, gamer.position.y);
+			while(i <= max){
+				Position pos = new Position(gamer.position.x, i);
+				walkedPos.add(pos);
+				i++;
+			}
+		}
+		return walkedPos;
+	}
+	public static Boolean checkColapse(List<Position> walkedPos, Map map){
+		System.out.println("BLOCKS:"+Arrays.asList(Map.getBlocks()));
+		System.out.println("WALKED:"+Arrays.asList(walkedPos));
+		for(Position pos : walkedPos){
+			for(Position block : Map.getBlocks()){
+				if(pos.equals(block)){
+					visibleBlocks.add(block);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	public static String[] getMove(String name) throws IOException {
 		String validMoves = "[0-9rlf]*";
 		Log.p(String.format("╭─   MazeGame ~ %s\n" + //
@@ -108,8 +158,8 @@ public class MazeGame {
 				// Move current number
 				while (moves[i].matches("[0-9]")) {
 					i++;
-					// If we are cheching num and we reach final string (there is no move for the
-					// last num)
+					// If we are cheching num and we reach final string 
+					// (there is no move for the last num)
 					if (i >= moves.length) {
 						Log.e(TAG, "Que fas posant números sense un moviment darrere?");
 						return (new String[] { "-1" });
