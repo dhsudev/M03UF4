@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 public class Map{
 	private final String TAG = "Laberint invàlid";
-	boolean valid = false;
+	public boolean valid = false;
 	private  char[][] matrix;
 	// Dimensions
 	private int width;
