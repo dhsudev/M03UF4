@@ -20,10 +20,10 @@ public class MazeGame {
 		//Log.d("Gamer:" + gamer.position + "Door" + map.getDoor());
 		Record record = new Record(args[0]);
 		if (record.exists() < 1) {
-			printHeader(record.laberint, "Encara no resolt");
+			printHeader(args[0], "Encara no resolt");
 		} else {
 			String[] values = record.previous.split(",");
-			printHeader(map.name, String.format("Rècord actual: %s en %s intents", record.user, values[2]));
+			printHeader(args[0], String.format("Rècord actual: %s en %s intents", values[1], values[2]));
 		}
 		//gamer.setDirection(0);
 		//gamer.turn(0);
@@ -190,12 +190,10 @@ public class MazeGame {
 		printHelp();
 		return (new String[] { "-1" });
 	}
-
 	public static void printHeader(String laberint, String intents) {
 		Log.info(String.format("Joc del laberint\n================\nH: mostra ajuda\n\nLaberint: %s\n%s\n", laberint,
 				intents));
 	}
-
 	public static void printHelp() {
 		Log.info("Les opcions disponibles són:\n" + //
 				"H: Mostra aquest text d'ajuda\n" + //
@@ -205,7 +203,6 @@ public class MazeGame {
 				"nF: mou n passes endavant\n" + //
 				"Q: Sortir");
 	}
-
 	public static void printMap(Map mapUtils, Gamer gamer) {
 		char[][] map = mapUtils.getMap();
 		// MazeChars MazeChars = new MazeChars;
@@ -257,7 +254,6 @@ public class MazeGame {
 			System.out.println();
 		}
 	}
-
 	public static boolean isWalked(Position pos) {
 		if (walked.size() == 0) {
 			return false;
@@ -269,7 +265,6 @@ public class MazeGame {
 		}
 		return false;
 	}
-
 	public static boolean isVisibleBlock(Position block) {
 		if (visibleBlocks.size() == 0) {
 			return false;
