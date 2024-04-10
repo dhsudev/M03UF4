@@ -22,11 +22,11 @@ public class Map{
 					//System.out.println("Laberint válid!");
 					this.valid = true;
 				}
-				else{Log.e(TAG, "No té solució");}
+				else{Log.error(TAG, "No té solució");}
 			}
 		}
 		else{ // No era un nom valid
-			Log.e(TAG, String.format("%s no és un laberint o no està al directory corresponent\n", file));
+			Log.error(TAG, String.format("%s no és un laberint o no està al directory corresponent\n", file));
 		}
 	}
 	public boolean checkSize(File fitxer) throws IOException{
@@ -35,7 +35,7 @@ public class Map{
 		String[] dimensions = legend.split("x");
 		// Comtestr el format de la primera línea
 		if(dimensions.length < 2 || !UtilString.esEnter(dimensions[0]) || !UtilString.esEnter(dimensions[1])){
-			Log.e(TAG,"Les dimensions no tenen el format desitjat heightXwidth");
+			Log.error(TAG,"Les dimensions no tenen el format desitjat heightXwidth");
 			return false;
 		}
 		// Guardar valors
@@ -43,7 +43,7 @@ public class Map{
 		int width = UtilString.aEnter(dimensions[1]);
 		// Comprovar tamany mínim
 		if((height < 2 || width < 2) || (height == 2 && width == 2)){
-			Log.e(TAG,"massa petit");
+			Log.error(TAG,"massa petit");
 			return false;
 		}
 		// Comprovar que el laberint té el tamany especificat
@@ -58,13 +58,13 @@ public class Map{
 			}
 			// Ample inválid (no és l'indicat o hi ha línies incompletes)
 			if(line.length() != width){
-				Log.e(TAG, "el ample ("+ width +") específicat no es correcte");
+				Log.error(TAG, "el ample ("+ width +") específicat no es correcte");
 				return false;
 			}
 		}
 		// Alçada inválida
 		if(count != height){
-			Log.e(TAG, "l'altura especificada ("+ height +") no es correcte");
+			Log.error(TAG, "l'altura especificada ("+ height +") no es correcte");
 			return false;
 		}
 		setDimensions(height, width);
@@ -89,7 +89,7 @@ public class Map{
 					if (isWall(pos) && !isCorner(pos) && door == null){
 						door = pos;
 					} else{
-						Log.e(TAG, "Les entrades están a posicions incorrectes o hi ha més d'una");
+						Log.error(TAG, "Les entrades están a posicions incorrectes o hi ha més d'una");
 						return false;
 					}
 					break;
@@ -98,14 +98,14 @@ public class Map{
 					if (isWall(pos) && !isCorner(pos)){
 						exits.add(pos);
 					}else {
-						Log.e(TAG, "Les exits están a posicions incorrectes");
+						Log.error(TAG, "Les exits están a posicions incorrectes");
 						return false;
 					}
 					break;
 				case '.': // Lliure
 					// Check si no esta al borde (tampoc cantonada)
 					if (isWall(pos) || isCorner(pos)){
-						Log.e(TAG, "Les pareds estan incompletes");
+						Log.error(TAG, "Les pareds estan incompletes");
 						return false;
 					}
 					break;
@@ -216,7 +216,7 @@ public class Map{
 				// Check if all the elements in the line are mazeChars
 				for (char c : line.toCharArray()) {
 					if(!validChars.contains(""+c)){
-						Log.e(TAG, "no utilitza un charSet adequat");
+						Log.error(TAG, "no utilitza un charSet adequat");
 						return false;
 					}
 				}
@@ -225,11 +225,11 @@ public class Map{
 				// Check 
 			}
 			if(door == null){
-				Log.e(TAG, "No hi ha entrada");
+				Log.error(TAG, "No hi ha entrada");
 				return false;
 			}
 			if(exits.isEmpty()){
-				Log.e(TAG, "No hi ha sortida");
+				Log.error(TAG, "No hi ha sortida");
 				return false;
 			}
 			return true;

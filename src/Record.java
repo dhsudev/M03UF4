@@ -6,6 +6,7 @@ public class Record {
 	public static String user;
 	public static int intents;
 	public static String previous;
+	public static int maxRecord = -1; 
 	public Record(String laberint, String user, int intents)throws IOException{
 		setLaberint(laberint);
 		setUser(user);
@@ -64,7 +65,7 @@ public class Record {
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
 			}//else{System.out.println("WIL DELETE THIS LINE ->"+previous);}
-			System.out.println(line);
+			//System.out.println(line);
 		}
         input.close();
         // write the new string without the line OVER the file
@@ -84,6 +85,7 @@ public class Record {
 				previous = line;
 				if(UtilString.esEnter(record[2])){
 					input.close();
+					maxRecord = Integer.parseInt(record[2]);
 					return Integer.parseInt(record[2]);
 				}
 			}

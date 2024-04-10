@@ -16,12 +16,12 @@ public class Gamer {
 
 		}
 		if(pos.x >= 0 && pos.y >= 0 && (!map.isWall(pos) || map.isDoor(pos) || map.isExit(pos))){
-			Log.d("updated pos");
+			//Log.d("updated pos");
 			this.position.x = pos.x;
 			this.position.y = pos.y;
 			return(true);
 		}
-		Log.d("pos not updated");
+		//Log.d("pos not updated");
 		return (false);
 	}
 	// Method to turn left
